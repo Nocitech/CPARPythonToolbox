@@ -120,7 +120,8 @@ def load(filename):
 
 
 def main():
-   data = load(r"C:\Users\KristianHennings\Desktop\TASKS\Karolinska\Pain Data Final\subjects\059_1.subx")
+   #data = load(r"C:\Users\KristianHennings\Desktop\TASKS\Karolinska\Pain Data Final\subjects\059_1.subx")
+   data = load(r"C:\Users\KristianHennings\Desktop\TASKS\Karolinska\Pain Data Final\subjects\091_3.subx")
    data.display()
 
 if __name__=="__main__":
