@@ -8,8 +8,7 @@ class Result:
       self.Completed = False
 
    def display(self):
-      print(f"Result [ ID:{self.id} ] {self.name} [ Type: {type(self).__name__}]")
-      print("  Completed:", self.Completed)
+      print(f"   [ ID:{self.id}, Type: {type(self).__name__}, Completed: {self.Completed} ] {self.name}")
 
 class NullResult(Result):
    def __init__(self, data):
@@ -27,10 +26,6 @@ class AlgometryResult(Result):
       self.Time = np.array([float(n)/20 for n in range(0, len(self.Pressure))])
       self.Completed = True
       
-   def display(self):
-      super().display()
-      print("  Number of samples:", len(self.Pressure))
-
 class TemporalSummationResult(AlgometryResult):
    def __init__(self, data):
       super().__init__(data)
@@ -45,14 +40,6 @@ class TemporalSummationResult(AlgometryResult):
       period = int(20*(self.Ton + self.Toff))
       index  = n * period
       return self.Rating[index] if index < len(self.Rating) else self.Rating[-1]
-
-   def display(self):
-      super().display()
-      print("  STIM PRESSURE   :", self.StimulatingPressure)
-      print("  NUM STIMULI    :", self.NumberOfStimuli)
-      print("  T ON           :", self.Ton)
-      print("  T OFF          :", self.Toff)
-      print("  PULSES         :", self.Pulses)
 
 class ThresholdResult(AlgometryResult):
    def __init__(self, data):
@@ -74,14 +61,6 @@ class ThresholdResult(AlgometryResult):
                   
       return -1
 
-   def display(self):
-      super().display()
-      print("  VASPDT :", self.VASPDT)
-      print("  PDT    :", self.PDT)
-      print("  PTT    :", self.PTT)
-      print("  PTL    :", self.PTL)
-
-
 class StimulusResponseResult(ThresholdResult):
    def __init__(self, data):
       super().__init__(data)
@@ -92,10 +71,6 @@ class ConditionedPainModulationResult(ThresholdResult):
       super().__init__(data)
 
       self.ConditioningPressure = data.attrib['nominal-cond-pressure']
-
-   def display(self):
-      super().display()
-      print("  COND PRESSURE :", self.ConditioningPressure)
 
 def CreateResult(node):
    if node.tag == "null-result":
@@ -134,16 +109,14 @@ class Subject:
       self.sessions = [Session(session) for session in sessions.findall("session")  ]  
 
    def display(self):
-      print("Subject ID:", self.id)
+      print(f"Subject [ ID: {self.id} ]")
 
       for session in self.sessions:
          session.display()
          print("")
 
 def load(filename):
-   data = ET.parse(filename)
-
-   return Subject(data)
+   return Subject(ET.parse(filename))
 
 
 def main():
