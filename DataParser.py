@@ -35,6 +35,25 @@ class TemporalSummationResult(AlgometryResult):
    def __init__(self, data):
       super().__init__(data)
 
+      self.StimulatingPressure = float(data.attrib['nominal-stimulating-pressure'])
+      self.NumberOfStimuli = int(data.attrib['number-of-stimuli'])
+      self.Ton = float(data.attrib['t-on'])
+      self.Toff = float(data.attrib['t-off'])
+      self.Pulses = np.array([self.get_response(n) for n in range(0, self.NumberOfStimuli)])
+
+   def get_response(self, n):
+      period = int(20*(self.Ton + self.Toff))
+      index  = n * period
+      return self.Rating[index] if index < len(self.Rating) else self.Rating[-1]
+
+   def display(self):
+      super().display()
+      print("  STIM PRESSURE   :", self.StimulatingPressure)
+      print("  NUM STIMULI    :", self.NumberOfStimuli)
+      print("  T ON           :", self.Ton)
+      print("  T OFF          :", self.Toff)
+      print("  PULSES         :", self.Pulses)
+
 class ThresholdResult(AlgometryResult):
    def __init__(self, data):
       super().__init__(data)
