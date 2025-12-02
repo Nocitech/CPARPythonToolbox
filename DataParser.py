@@ -15,6 +15,37 @@ class NullResult(Result):
 class AlgometryResult(Result):
    def __init__(self, data):
       super().__init__(data)
+      valueNodes = data.findall(".//p")
+      
+      values = [(float(p.attrib['s']), float(p.attrib['c']), float(p.attrib['vas'])) for p in valueNodes]
+      self.Pressure = [v[0] for v in values]
+      self.ConditioningPressure = [v[1] for v in values]
+      self.Rating = [v[2] for v in values]
+      self.Time = [float(n)/20 for n in range(0, len(self.Pressure))]
+      
+      self.VASPDT = float(data.attrib['vas-pdt'])
+      self.PDT = self.FindPDT()
+      self.PTT = self.Pressure[-1] if len(self.Pressure) > 0 else float('nan')
+      self.PTL = self.Rating[-1] if len(self.Rating) > 0 else float('nan')
+
+   def FindPDT(self):
+      index = self.FindIndexDownwards(self.VASPDT)
+      return float('nan') if index < 0 else self.Pressure[index]
+
+   def FindIndexDownwards(self, score):
+      for n in range(len(self.Rating) - 2, -1, -1):
+         if self.Rating[n] <= score and self.Rating[n + 1] >= score:
+            return n + 1
+                  
+      return -1
+
+   def display(self):
+      super().display()
+      print("  Number of samples:", len(self.Pressure))
+      print("  PDT:", self.PDT)
+      print("  PTT:", self.PTT)
+      print("  PTL:", self.PTL)
+
 
 class StimulusResponseResult(AlgometryResult):
    def __init__(self, data):
