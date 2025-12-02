@@ -1,20 +1,31 @@
 import xml.etree.ElementTree as ET
 
-class NullResult:
+class Result:
    def __init__(self, data):
       self.id = data.attrib["ID"]
 
-class StimulusResponseResult:
-   def __init__(self, data):
-      self.id = data.attrib["ID"]
+   def display(self):
+      print("Result ID:", self.id)
 
-class TemporalSummationResult:
+class NullResult(Result):
    def __init__(self, data):
-      self.id = data.attrib["ID"]
+      super().__init__(data)
 
-class ConditionedPainModulationResult:
+class AlgometryResult(Result):
    def __init__(self, data):
-      self.id = data.attrib["ID"]
+      super().__init__(data)
+
+class StimulusResponseResult(AlgometryResult):
+   def __init__(self, data):
+      super().__init__(data)
+
+class TemporalSummationResult(AlgometryResult):
+   def __init__(self, data):
+      super().__init__(data)
+
+class ConditionedPainModulationResult(AlgometryResult):
+   def __init__(self, data):
+      super().__init__(data)
 
 def CreateResult(node):
    if node.tag == "null-result":
@@ -39,7 +50,7 @@ class Session:
       print("Results:")
 
       for result in self.results:
-         print(" - Result ID:", result.id)
+         result.display()
 
       print("")
 
@@ -59,14 +70,15 @@ class Subject:
          session.display()
          print("")
 
-
-
-
-
-
-
 def load(filename):
    data = ET.parse(filename)
 
    return Subject(data)
 
+
+def main():
+   data = load(r"C:\Users\KristianHennings\Desktop\TASKS\Karolinska\Pain Data Final\subjects\059_1.subx")
+   data.display()
+
+if __name__=="__main__":
+    main()
