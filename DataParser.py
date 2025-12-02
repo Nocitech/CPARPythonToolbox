@@ -3,9 +3,10 @@ import xml.etree.ElementTree as ET
 class Result:
    def __init__(self, data):
       self.id = data.attrib["ID"]
+      self.name = data.attrib["name"]
 
    def display(self):
-      print("Result ID:", self.id)
+      print(f"Result [ ID:{self.id} ] {self.name} [ Type: {type(self).__name__}]")
 
 class NullResult(Result):
    def __init__(self, data):
