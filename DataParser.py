@@ -3,12 +3,12 @@ import numpy as np
 
 class Result:
    def __init__(self, data):
-      self.id = data.attrib["ID"]
-      self.name = data.attrib["name"]
+      self.ID = data.attrib["ID"]
+      self.Name = data.attrib["name"]
       self.Completed = False
 
    def display(self):
-      print(f"   [ ID:{self.id}, Type: {type(self).__name__}, Completed: {self.Completed} ] {self.name}")
+      print(f"   [ ID:{self.ID}, Type: {type(self).__name__}, Completed: {self.Completed} ] {self.Name}")
 
 class NullResult(Result):
    def __init__(self, data):
@@ -21,7 +21,7 @@ class AlgometryResult(Result):
       
       values = [(float(p.attrib['s']), float(p.attrib['c']), float(p.attrib['vas'])) for p in valueNodes]
       self.Pressure = np.array([v[0] for v in values])
-      self.ConditioningPressure = np.array([v[1] for v in values])
+      self.Conditioning = np.array([v[1] for v in values])
       self.Rating = np.array([v[2] for v in values])
       self.Time = np.array([float(n)/20 for n in range(0, len(self.Pressure))])
       self.Completed = True
@@ -87,14 +87,14 @@ def CreateResult(node):
 class Session:
    def __init__(self, node):
       self.id = node.attrib["id"]
-      self.results = [CreateResult(r) for r in node.find("results")]
+      self.Results = [CreateResult(r) for r in node.find("results")]
 
    def display(self):
       print("Session ID:", self.id)
 
       print("Results:")
 
-      for result in self.results:
+      for result in self.Results:
          result.display()
 
       print("")
@@ -106,12 +106,12 @@ class Subject:
 
       self.id = root.attrib["id"]   
 
-      self.sessions = [Session(session) for session in sessions.findall("session")  ]  
+      self.Sessions = [Session(session) for session in sessions.findall("session")  ]  
 
    def display(self):
       print(f"Subject [ ID: {self.id} ]")
 
-      for session in self.sessions:
+      for session in self.Sessions:
          session.display()
          print("")
 
