@@ -1,12 +1,15 @@
 import xml.etree.ElementTree as ET
+import numpy as np
 
 class Result:
    def __init__(self, data):
       self.id = data.attrib["ID"]
       self.name = data.attrib["name"]
+      self.Completed = False
 
    def display(self):
       print(f"Result [ ID:{self.id} ] {self.name} [ Type: {type(self).__name__}]")
+      print("  Completed:", self.Completed)
 
 class NullResult(Result):
    def __init__(self, data):
@@ -18,11 +21,24 @@ class AlgometryResult(Result):
       valueNodes = data.findall(".//p")
       
       values = [(float(p.attrib['s']), float(p.attrib['c']), float(p.attrib['vas'])) for p in valueNodes]
-      self.Pressure = [v[0] for v in values]
-      self.ConditioningPressure = [v[1] for v in values]
-      self.Rating = [v[2] for v in values]
-      self.Time = [float(n)/20 for n in range(0, len(self.Pressure))]
+      self.Pressure = np.array([v[0] for v in values])
+      self.ConditioningPressure = np.array([v[1] for v in values])
+      self.Rating = np.array([v[2] for v in values])
+      self.Time = np.array([float(n)/20 for n in range(0, len(self.Pressure))])
+      self.Completed = True
       
+   def display(self):
+      super().display()
+      print("  Number of samples:", len(self.Pressure))
+
+class TemporalSummationResult(AlgometryResult):
+   def __init__(self, data):
+      super().__init__(data)
+
+class ThresholdResult(AlgometryResult):
+   def __init__(self, data):
+      super().__init__(data)
+
       self.VASPDT = float(data.attrib['vas-pdt'])
       self.PDT = self.FindPDT()
       self.PTT = self.Pressure[-1] if len(self.Pressure) > 0 else float('nan')
@@ -41,23 +57,26 @@ class AlgometryResult(Result):
 
    def display(self):
       super().display()
-      print("  Number of samples:", len(self.Pressure))
-      print("  PDT:", self.PDT)
-      print("  PTT:", self.PTT)
-      print("  PTL:", self.PTL)
+      print("  VASPDT :", self.VASPDT)
+      print("  PDT    :", self.PDT)
+      print("  PTT    :", self.PTT)
+      print("  PTL    :", self.PTL)
 
 
-class StimulusResponseResult(AlgometryResult):
+class StimulusResponseResult(ThresholdResult):
    def __init__(self, data):
       super().__init__(data)
 
-class TemporalSummationResult(AlgometryResult):
+
+class ConditionedPainModulationResult(ThresholdResult):
    def __init__(self, data):
       super().__init__(data)
 
-class ConditionedPainModulationResult(AlgometryResult):
-   def __init__(self, data):
-      super().__init__(data)
+      self.ConditioningPressure = data.attrib['nominal-cond-pressure']
+
+   def display(self):
+      super().display()
+      print("  COND PRESSURE :", self.ConditioningPressure)
 
 def CreateResult(node):
    if node.tag == "null-result":
