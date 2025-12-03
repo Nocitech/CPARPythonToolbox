@@ -9,12 +9,10 @@ The protocol consists of the following tests:
 3. `T03`: Stimulus Response Curve for Non-dominant Leg [cPDT, cPTT, cPTL]
 4. `T04`: Conditioned Pain Modulation for Dominant Leg (Conditioned by the non-dominant leg) [cpmPDT, cpm PTT, cpmPTL]
 
-To use the script modify the path in the `analysis.py` script to point to where you have your `*.subx` raw data files:
+To use the script modify the path in line 6 of the `analysis.py` script to point to where you have your `*.subx` raw data files:
 
 ```python
 folder = Path(r"[Path to files]")
-
-subjectFiles = list(folder.glob("*.subx"))   # or "*.txt", "*.json", "*.csv", etc.
 ```
 
 and run the analysis.py script. This requires that you have Numpy and Pandas installed.
