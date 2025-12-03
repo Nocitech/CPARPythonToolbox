@@ -5,7 +5,7 @@ Code for parsing and prepossing raw subject data files from the standard Aalborg
 The protocol consists of the following tests:
 
 1. `T01`: Stimulus Response Curve for Dominant Leg [PDT, PTT, PTL]
-2. `T02`: Temporal summation (1s/1s, 10 stimuli) [VAS Ratings for each stimulus]
+2. `T02`: Temporal summation (1s/1s, 10 stimuli) [VAS Ratings for each stimulus, R01 - R10]
 3. `T03`: Stimulus Response Curve for Non-dominant Leg [cPDT, cPTT, cPTL]
 4. `T04`: Conditioned Pain Modulation for Dominant Leg (Conditioned by the non-dominant leg) [cpmPDT, cpm PTT, cpmPTL]
 
