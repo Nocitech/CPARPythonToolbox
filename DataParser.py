@@ -88,6 +88,15 @@ class Session:
    def __init__(self, node):
       self.id = node.attrib["id"]
       self.Results = [CreateResult(r) for r in node.find("results")]
+   
+   def exists(self, id):
+      if any(r.ID == id for r in self.Results):
+         return self.get(id).Completed
+      else:
+         return False
+   
+   def get(self, id):
+      return next((r for r in self.Results if r.ID == id), None)
 
    def display(self):
       print("Session ID:", self.id)
