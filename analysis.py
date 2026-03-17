@@ -8,7 +8,8 @@ folder = Path(r"C:\Users\KristianHennings\Desktop\TASKS\Karolinska\Pain Data Fin
 subjectFiles = list(folder.glob("*.subx"))   # or "*.txt", "*.json", "*.csv", etc.
 
 class SessionData:
-    def __init__(self, id, session):
+    def __init__(self, filename, id, session):
+         self.Filename = filename
          self.SubjectID = id
          self.SessionID = session.id
 
@@ -69,10 +70,10 @@ class SessionData:
 
 def collectData(filename):
    start = time.perf_counter()
-   data = dp.load(filename)
+   data = dp.load(filename)   
    end = time.perf_counter()   
    print(f"Loaded file: {filename.name} [ {end - start:.2f}s] (Number of sessions: {len(data.Sessions)})")
-   return SessionData(data.id, data.Sessions[0]) if data.Sessions else None  
+   return SessionData(filename, data.id, data.Sessions[0]) if data.Sessions else None  
 
 tstart = time.perf_counter()
 data = [collectData(f) for f in subjectFiles]
@@ -82,6 +83,7 @@ tend = time.perf_counter()
 print(f"Total time: {tend - tstart:.2f}s")
 
 statistics = pd.DataFrame({
+    "Filename": [d.Filename for d in data ],
     "SubjectID": [d.SubjectID for d in data ],
     "SessionID": [d.SessionID for d in data ],
     "PDT": [d.PDT for d in data ],
